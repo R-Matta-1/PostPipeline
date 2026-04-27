@@ -25,6 +25,8 @@ The bot manages content objects through a lifecycle-based command interface. All
 
 ## Workflow Sequence
 
+![alt text](Readme.d/image.png)
+
 ## Project Structure
 
 ```text
