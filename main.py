@@ -16,8 +16,8 @@ def load_config():
 def configure_system():
     """Manual configuration CLI for first-time setup or --configure flag."""
     print("--- System Configuration ---")
-    method = input("Choose communication method (telegram/whatsapp/terminal): ").lower()
-    target = input("Enter default social media target (e.g., Facebook, LinkedIn, X): ")
+    method = input("Choose communication method (telegram/whatsapp/terminal): ").strip().lower()
+    target = input("Enter default social media target (e.g., Facebook, LinkedIn, X): ").strip()
     token = input("Enter API Token: ")
     
     config = {
@@ -42,11 +42,13 @@ async def poll_loop(bot, interval):
         updates = await bot.get_updates() 
         
         for update in updates:
-            command = update.get("text", "").split()[0]
-            args = update.get("text", "").split()[1:]
-
             # The 'Switch' (Match) statement for command routing
-            match command:
+            # Lowercase everything for case-insensitive comparison
+            command = update.get("text", "").split()
+            cmd_lower = command[0].lower() if command else ""
+            args = command[1:] if len(command) > 1 else []
+
+            match cmd_lower:
                 case "/generate":
                     asyncio.create_task(bot.handle_generate(args))
                 case "/list":
@@ -76,7 +78,8 @@ async def main():
         config = configure_system()
 
     # Polymorphic instantiation based on config
-    match config["method"]:
+    method = config["method"].lower()
+    match method:
 #        case "telegram":
 #            bot = TelegramBot(config["api_token"])
 #        case "whatsapp":
@@ -89,7 +92,7 @@ async def main():
 
     # Start the non-blocking polling loop
     try:
-        await poll_loop(bot, config.get("poll_interval", 15))
+        await poll_loop(bot, config.get("poll_interval", 1))
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
 

@@ -19,6 +19,6 @@ async def generate_dummy_post():
     return {
         "title": f"Dummy Post about {topic}",
         "content": post_content,
-        "platform": "Terminal", # Default for dummy
+        "platform": "terminal", # Default for dummy
         "status": "PENDING"
     }
