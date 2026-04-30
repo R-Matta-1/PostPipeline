@@ -29,10 +29,10 @@ class Texter(ABC):
     # --- Template Methods (CRUD operations) ---
     # These provide default implementations but can be overridden
     
-    async def handle_generate(self, args=None):
+    async def handle_generate(self):
         """Generate a dummy post and optionally save it."""
         await self.send_message("Generating a dummy post...")
-        post_data = await generate_dummy_post()
+        post_data = await generate_dummy_post(platform=self.platform)
         await self.send_message(
             f"Generated Post:\n\nTitle: {post_data['title']}\n"
             f"Content: {post_data['content']}\nPlatform: {post_data['platform']}"

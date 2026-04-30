@@ -19,12 +19,14 @@ def configure_system():
     method = input("Choose communication method (telegram/whatsapp/terminal): ").strip().lower()
     target = input("Enter default social media target (e.g., Facebook, LinkedIn, X): ").strip()
     token = input("Enter API Token: ")
+    poll_interval = input("Enter polling interval in seconds (default 3): ").strip()
+    poll_interval = int(poll_interval) if poll_interval.isdigit() else 3
     
     config = {
         "method": method,
         "target_platform": target,
         "api_token": token,
-        "poll_interval": 15
+        "poll_interval": poll_interval
     }
     
     os.makedirs("config", exist_ok=True)
@@ -85,14 +87,14 @@ async def main():
 #        case "whatsapp":
 #            bot = WhatsAppBot(config["api_token"])
         case "terminal":
-            bot = TerminalTexter()
+            bot = TerminalTexter(platform=config["target_platform"])
         case _:
             print("Invalid method in config.")
             return
 
     # Start the non-blocking polling loop
     try:
-        await poll_loop(bot, config.get("poll_interval", 1))
+        await poll_loop(bot, config.get("poll_interval", 3))
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
 
